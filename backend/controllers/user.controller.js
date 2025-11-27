@@ -75,7 +75,7 @@ export const loginUser = async (req, res) => {
     res
       .cookie("token", token, {
         httpOnly: true,
-        secure: true,
+        secure: false,
         sameSite: "strict",
         maxAge: 1 * 24 * 60 * 60 * 1000,
       })
@@ -103,7 +103,7 @@ export const logoutUser = async (req, res) => {
 
 export const getProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id).select("-password");
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -120,7 +120,7 @@ export const editProfile = async (req, res) => {
   try {
     const userId = req.id;
     const { gender, bio } = req.body;
-    const { profilePicture } = req.files;
+    const profilePicture = req.file;
     let cloudResponse;
 
     if (profilePicture) {
@@ -128,23 +128,15 @@ export const editProfile = async (req, res) => {
       cloudResponse = await cloudinary.uploader.upload(fileuri);
     }
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select("-password");
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (bio) {
-      user.bio = bio;
-    }
-
-    if (gender) {
-      user.gender = gender;
-    }
-
-    if (profilePicture) {
-      user.profilePicture = cloudResponse.secure_url;
-    }
+    if (bio) user.bio = bio;
+    if (gender) user.gender = gender;
+    if (profilePicture) user.profilePicture = cloudResponse.secure_url;
 
     await user.save();
 
@@ -193,29 +185,32 @@ export const followAndUnfollowUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const isFollowing = follower.following.includes(followingId);
+    const isFollowing = follower.following.some(
+      (id) => id.toString() === followingId.toString()
+    );
+
     if (isFollowing) {
       await Promise.all([
-        User.updateOne({
-          _id: followerId,
-          $pull: { following: followingId },
-        }),
-        User.updateOne({
-          _id: followingId,
-          $pull: { followers: followerId },
-        }),
+        User.updateOne(
+          { _id: followerId },
+          { $pull: { following: followingId } }
+        ),
+        User.updateOne(
+          { _id: followingId },
+          { $pull: { followers: followerId } }
+        ),
       ]);
       return res.status(200).json({ message: "User unfollowed successfully" });
     } else {
       await Promise.all([
-        User.updateOne({
-          _id: followerId,
-          $push: { following: followingId },
-        }),
-        User.updateOne({
-          _id: followingId,
-          $push: { followers: followerId },
-        }),
+        User.updateOne(
+          { _id: followerId },
+          { $push: { following: followingId } }
+        ),
+        User.updateOne(
+          { _id: followingId },
+          { $push: { followers: followerId } }
+        ),
       ]);
       return res.status(200).json({ message: "User followed successfully" });
     }
