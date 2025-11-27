@@ -1,7 +1,8 @@
-import User from "../models/user.model";
+import { User } from "../model/user.model.js";
 import bcrypt from "bcrypt";
+import cloudinary from "../utils/cloudinary.js";
 import jwt from "jsonwebtoken";
-import getDataUri from "../utils/datauri";
+import getDataUri from "../utils/datauri.js";
 
 export const registerUser = async (req, res) => {
   try {
