@@ -9,7 +9,7 @@ const conversationSchema = new Schema(
         required: true,
       },
     ],
-    message: [
+    messages: [
       {
         type: Schema.Types.ObjectId,
         ref: "Message",
