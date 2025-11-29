@@ -1,14 +1,14 @@
 import {
-    Home,
-    Search,
-    Heart,
-    MessageCircle,
-    Bell,
-    Settings,
-    TrendingUp,
-    LogOut,
+  Home,
+  Search,
+  Heart,
+  MessageCircle,
+  Bell,
+  Settings,
+  TrendingUp,
+  LogOut,
 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const sidebarItems = [
   {
@@ -42,7 +42,7 @@ export const sidebarItems = [
   {
     icon: (
       <Avatar>
-        <AvatarImage src="https://github.com/shadcn.png" />
+        <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
         <AvatarFallback>CN</AvatarFallback>
       </Avatar>
     ),

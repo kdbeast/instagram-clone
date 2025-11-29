@@ -31,7 +31,9 @@ export const registerUser = async (req, res) => {
       .json({ message: "User registered successfully", success: true });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Failed to register user" });
+    res
+      .status(500)
+      .json({ message: "Failed to register user", success: false });
   }
 };
 
@@ -97,7 +99,7 @@ export const loginUser = async (req, res) => {
       });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Failed to login user" });
+    res.status(500).json({ message: "Failed to login user", success: false });
   }
 };
 
@@ -105,10 +107,10 @@ export const logoutUser = async (req, res) => {
   try {
     res
       .clearCookie("token", "", { maxAge: 0 })
-      .json({ message: "User logged out successfully" });
+      .json({ message: "User logged out successfully", success: true });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Failed to logout user" });
+    res.status(500).json({ message: "Failed to logout user", success: false });
   }
 };
 
@@ -117,13 +119,17 @@ export const getProfile = async (req, res) => {
     const user = await User.findById(req.params.id).select("-password");
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res
+        .status(404)
+        .json({ message: "User not found", success: false });
     }
 
     res.status(200).json({ user, success: true });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Failed to get user profile" });
+    res
+      .status(500)
+      .json({ message: "Failed to get user profile", success: false });
   }
 };
 
@@ -142,7 +148,9 @@ export const editProfile = async (req, res) => {
     const user = await User.findById(userId).select("-password");
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res
+        .status(404)
+        .json({ message: "User not found", success: false });
     }
 
     if (bio) user.bio = bio;
@@ -158,7 +166,9 @@ export const editProfile = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Failed to edit user profile" });
+    res
+      .status(500)
+      .json({ message: "Failed to edit user profile", success: false });
   }
 };
 
@@ -169,12 +179,16 @@ export const getSuggestedUser = async (req, res) => {
     }).select("-password");
 
     if (!suggestedUsers)
-      return res.status(404).json({ message: "No suggested users found" });
+      return res
+        .status(404)
+        .json({ message: "No suggested users found", success: false });
 
     res.status(200).json({ suggestedUsers, success: true });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Failed to get suggested users" });
+    res
+      .status(500)
+      .json({ message: "Failed to get suggested users", success: false });
   }
 };
 
@@ -186,14 +200,19 @@ export const followAndUnfollowUser = async (req, res) => {
     if (followerId === followingId) {
       return res
         .status(404)
-        .json({ message: "You cannot follow/unfollow yourself" });
+        .json({
+          message: "You cannot follow/unfollow yourself",
+          success: false,
+        });
     }
 
     const follower = await User.findById(followerId);
     const following = await User.findById(followingId);
 
     if (!follower || !following) {
-      return res.status(404).json({ message: "User not found" });
+      return res
+        .status(404)
+        .json({ message: "User not found", success: false });
     }
 
     const isFollowing = follower.following.some(
@@ -211,7 +230,9 @@ export const followAndUnfollowUser = async (req, res) => {
           { $pull: { followers: followerId } }
         ),
       ]);
-      return res.status(200).json({ message: "User unfollowed successfully" });
+      return res
+        .status(200)
+        .json({ message: "User unfollowed successfully", success: true });
     } else {
       await Promise.all([
         User.updateOne(
@@ -223,10 +244,12 @@ export const followAndUnfollowUser = async (req, res) => {
           { $push: { followers: followerId } }
         ),
       ]);
-      return res.status(200).json({ message: "User followed successfully" });
+      return res
+        .status(200)
+        .json({ message: "User followed successfully", success: true });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Failed to follow user" });
+    res.status(500).json({ message: "Failed to follow user", success: false });
   }
 };
