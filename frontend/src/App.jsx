@@ -1,29 +1,39 @@
-import { Label } from "@radix-ui/react-label";
 import "./App.css";
-import { Button } from "./components/ui/button";
-import { Input } from "./components/ui/input";
+import Signup from "./components/Signup";
+import { createBrowserRouter, RouterProvider } from "react-router";
+import Login from "./components/Login";
+import MainLayout from "./components/MainLayout";
+import Home from "./components/Home";
+import Profile from "./components/Profile";
+const browserRouter = createBrowserRouter([
+  {
+    path: "/",
+    element: <MainLayout />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/profile",
+        element: <Profile />,
+      },
+    ],
+  },
+  {
+    path: "/signup",
+    element: <Signup />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+]);
 
 function App() {
   return (
     <>
-      <div className="flex items-center w-screen h-screen justify-center">
-        <form action="">
-          <div className="">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" />
-          </div>
-          <div className="">
-            <Button>Login</Button>
-          </div>
-          <div className="">
-            <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" />
-          </div>
-          <div className="">
-            <Button>Register</Button>
-          </div>
-        </form>
-      </div>
+      <RouterProvider router={browserRouter} />
     </>
   );
 }

@@ -1,14 +1,14 @@
-import { Label } from "@radix-ui/react-label";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
+import { useState } from "react";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
+import { Loader2 } from "lucide-react";
+import { Label } from "@radix-ui/react-label";
 import { Link, useNavigate } from "react-router";
 
-const Signup = () => {
+function Login() {
   const [input, setInput] = useState({
-    username: "",
     email: "",
     password: "",
   });
@@ -20,7 +20,7 @@ const Signup = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        "http://localhost:8000/api/v1/user/register",
+        "http://localhost:8000/api/v1/user/login",
         input,
         {
           headers: {
@@ -33,7 +33,6 @@ const Signup = () => {
         navigate("/");
         toast.success(response.data.message);
         setInput({
-          username: "",
           email: "",
           password: "",
         });
@@ -62,18 +61,8 @@ const Signup = () => {
           <div className="my-4">
             <h1 className="text-xl font-bold text-center">LOGO</h1>
             <p className="text-sm text-gray-500">
-              Sign up to see photos and videos from your friends.
+              Login to see photos and videos from your friends.
             </p>
-          </div>
-          <div>
-            <Label className="font-medium">Username</Label>
-            <Input
-              type="text"
-              name="username"
-              value={input.username}
-              onChange={handleChange}
-              className="focus-visible:ring-transparent my-2"
-            />
           </div>
           <div>
             <Label className="font-medium">Email</Label>
@@ -103,17 +92,16 @@ const Signup = () => {
           ) : (
             <Button type="submit">Login</Button>
           )}
-          <Button>Sign Up</Button>
           <span className="text-center">
-            Already have an account?{" "}
-            <Link to="/login" className="text-blue-600">
-              Login
+            Don't have an account?{" "}
+            <Link to="/signup" className="text-blue-600">
+              Sign Up
             </Link>
           </span>
         </form>
       </div>
     </>
   );
-};
+}
 
-export default Signup;
+export default Login;
