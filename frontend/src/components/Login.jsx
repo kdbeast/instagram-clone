@@ -4,22 +4,24 @@ import { useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Loader2 } from "lucide-react";
+import { useDispatch } from "react-redux";
 import { Label } from "@radix-ui/react-label";
 import { Link, useNavigate } from "react-router";
-
+import { setAuthUser } from "@/redux/authSlice";
 function Login() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [input, setInput] = useState({
     email: "",
     password: "",
   });
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
-      const response = await axios.post(
+      const res = await axios.post(
         "http://localhost:8000/api/v1/user/login",
         input,
         {
@@ -29,18 +31,18 @@ function Login() {
           withCredentials: true,
         }
       );
-      if (response.data.success) {
+      if (res.data.success) {
+        dispatch(setAuthUser(res.data.user));
         navigate("/");
-        toast.success(response.data.message);
+        toast.success(res.data.message);
         setInput({
           email: "",
           password: "",
         });
-      } else {
-        toast.error(response.data.message);
       }
-    } catch (error) {
-      toast.error(error.response.data.message);
+    } catch (err) {
+      console.log(err);
+      toast.error(err.res.data.message);
     } finally {
       setLoading(false);
     }

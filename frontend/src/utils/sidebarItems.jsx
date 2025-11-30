@@ -8,7 +8,6 @@ import {
   TrendingUp,
   LogOut,
 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const sidebarItems = [
   {
@@ -40,12 +39,7 @@ export const sidebarItems = [
     title: "Settings",
   },
   {
-    icon: (
-      <Avatar>
-        <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-        <AvatarFallback>CN</AvatarFallback>
-      </Avatar>
-    ),
+    icon: "",
     title: "Profile",
   },
   {
