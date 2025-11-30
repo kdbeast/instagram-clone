@@ -7,6 +7,13 @@ import {
   Settings,
   TrendingUp,
   LogOut,
+  BoxIcon,
+  Box,
+  BoxSelect,
+  BoxSelectIcon,
+  BookX,
+  BoxesIcon,
+  PlusSquare,
 } from "lucide-react";
 
 export const sidebarItems = [
@@ -35,8 +42,8 @@ export const sidebarItems = [
     title: "Notifications",
   },
   {
-    icon: <Settings />,
-    title: "Settings",
+    icon: <PlusSquare />,
+    title: "Create",
   },
   {
     icon: "",

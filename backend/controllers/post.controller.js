@@ -49,11 +49,11 @@ export const getAllPost = async (req, res) => {
   try {
     const posts = await Post.find()
       .sort({ createdAt: -1 })
-      .populate({ path: "author", select: "username, profilePicture" })
+      .populate({ path: "author", select: "username profilePicture" })
       .populate({
         path: "comments",
         sort: { createdAt: -1 },
-        populate: { path: "author", select: "username, profilePicture" },
+        populate: { path: "author", select: "username profilePicture" },
       });
     res.status(200).json({ posts, success: true });
   } catch (error) {
@@ -93,7 +93,7 @@ export const likePost = async (req, res) => {
 
     // implement socket.io for real time notification
 
-    res.status(200).json({ message: "Post liked successfully" });
+    res.status(200).json({ message: "Post liked successfully", success: true });
   } catch (error) {
     res.status(409).json({ message: error.message });
   }
@@ -114,7 +114,9 @@ export const dislikePost = async (req, res) => {
 
     // implement socket.io for real time notification
 
-    res.status(200).json({ message: "Post disliked successfully" });
+    res
+      .status(200)
+      .json({ message: "Post disliked successfully", success: true });
   } catch (error) {
     res.status(409).json({ message: error.message });
   }
@@ -139,7 +141,9 @@ export const addComment = async (req, res) => {
     post.comments.push(comment._id);
     await post.save();
 
-    res.status(200).json({ message: "Comment added successfully", comment });
+    res
+      .status(200)
+      .json({ message: "Comment added successfully", comment, success: true });
   } catch (error) {
     res.status(409).json({ message: error.message });
   }
@@ -157,7 +161,7 @@ export const getCommentsOfPost = async (req, res) => {
         .status(404)
         .json({ message: "No comments found for this post" });
     }
-    res.status(200).json({ comments });
+    res.status(200).json({ comments, success: true });
   } catch (error) {
     res.status(409).json({ message: error.message });
   }
@@ -186,7 +190,9 @@ export const deletePost = async (req, res) => {
 
     await Comment.deleteMany({ post: postId });
 
-    res.status(200).json({ message: "Post deleted successfully" });
+    res
+      .status(200)
+      .json({ message: "Post deleted successfully", success: true });
   } catch (error) {
     res.status(409).json({ message: error.message });
   }
@@ -206,15 +212,19 @@ export const bookmarkPost = async (req, res) => {
     if (user.bookmarks.includes(post._id)) {
       await user.updateOne({ $pull: { bookmarks: post._id } });
       await user.save();
-      return res
-        .status(200)
-        .json({ type: "unsaved", message: "Post unbookmarked successfully" });
+      return res.status(200).json({
+        type: "unsaved",
+        message: "Post unbookmarked successfully",
+        success: true,
+      });
     } else {
       await user.updateOne({ $addToSet: { bookmarks: post._id } });
       await user.save();
-      return res
-        .status(200)
-        .json({ type: "saved", message: "Post bookmarked successfully" });
+      return res.status(200).json({
+        type: "saved",
+        message: "Post bookmarked successfully",
+        success: true,
+      });
     }
 
     // implement socket.io for real time notification
@@ -246,7 +256,9 @@ export const unbookmarkPost = async (req, res) => {
 
     // implement socket.io for real time notification
 
-    res.status(200).json({ message: "Post unbookmarked successfully" });
+    res
+      .status(200)
+      .json({ message: "Post unbookmarked successfully", success: true });
   } catch (error) {
     res.status(409).json({ message: error.message });
   }
