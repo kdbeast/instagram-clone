@@ -129,14 +129,21 @@ export const addComment = async (req, res) => {
     const { text } = req.body;
     const post = await Post.findById(postId);
     if (!text) {
-      return res.status(404).json({ message: "Comment is required" });
+      return res
+        .status(404)
+        .json({ message: "Comment is required", success: false });
     }
 
     const comment = await Comment.create({
       text,
       author: userId,
       post: postId,
-    }).populate({ path: "author", select: "username, profilePicture" });
+    });
+
+    await comment.populate({
+      path: "author",
+      select: "username profilePicture",
+    });
 
     post.comments.push(comment._id);
     await post.save();
@@ -152,16 +159,15 @@ export const addComment = async (req, res) => {
 export const getCommentsOfPost = async (req, res) => {
   try {
     const postId = req.params.id;
-    const comments = await Comment.find({ post: postId }).populate(
-      "author",
-      "username, profilePicture"
-    );
+    const comments = await Comment.find({ post: postId })
+      .sort({ createdAt: -1 })
+      .populate("author", "username profilePicture");
     if (!comments) {
       return res
         .status(404)
-        .json({ message: "No comments found for this post" });
+        .json({ message: "No comments found for this post", success: false });
     }
-    res.status(200).json({ comments, success: true });
+    res.status(200).json({ success: true, comments });
   } catch (error) {
     res.status(409).json({ message: error.message });
   }

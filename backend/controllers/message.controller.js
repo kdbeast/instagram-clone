@@ -6,14 +6,14 @@ export const sendMessage = async (req, res) => {
   try {
     const senderId = req.id;
     const receiverId = req.params.id;
-    const { message } = req.body;
+    const { textMessage: message } = req.body;
 
-    const conversation = await Conversation.findOne({
+    let conversation = await Conversation.findOne({
       participants: { $all: [senderId, receiverId] },
     });
 
     if (!conversation) {
-      const newConversation = await Conversation.create({
+      conversation = await Conversation.create({
         participants: [senderId, receiverId],
       });
     }
@@ -24,7 +24,7 @@ export const sendMessage = async (req, res) => {
       message,
     });
 
-    if (newMessage) await conversation.messages.push(newMessage._id);
+    if (newMessage) conversation.messages.push(newMessage._id);
     await Promise.all([conversation.save(), newMessage.save()]);
 
     res.status(200).json({ newMessage, success: true });
@@ -37,14 +37,16 @@ export const getMessage = async (req, res) => {
   try {
     const senderId = req.id;
     const receiverId = req.params.id;
-    const conversation = await Conversation.findOne({
+    let conversation = await Conversation.findOne({
       participants: { $all: [senderId, receiverId] },
-    });
+    }).populate("messages");
 
     if (!conversation)
-      return res.status(404).json({ messages: "Conversation not found" });
+      return res.status(200).json({ success: true, messages: [] });
 
-    res.status(200).json({ conversation, success: true });
+    return res
+      .status(200)
+      .json({ success: true, messages: conversation?.messages });
   } catch (error) {
     res.status(409).json({ message: error.message });
   }

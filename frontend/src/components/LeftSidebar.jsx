@@ -4,8 +4,10 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
+// import { setPosts } from "@/redux/postSlice";
 import { setAuthUser } from "@/redux/authSlice";
 import CreatePost from "../components/CreatePost";
+import { setSelectedPost } from "@/redux/postSlice";
 import { sidebarItems } from "@/utils/sidebarItems";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -23,6 +25,7 @@ const Sidebar = () => {
       if (res.data.success) {
         toast.success(res.data.message);
         dispatch(setAuthUser(null));
+        dispatch(setSelectedPost(null));
         navigate("/login");
       }
     } catch (error) {
