@@ -36,7 +36,9 @@ const Sidebar = () => {
   const sidebarHandler = (title) => {
     if (title === "Logout") logoutHandler();
     else if (title === "Create") setOpen(true);
-    else navigate(`/${title.toLowerCase()}`);
+    else if (title === "Profile") navigate(`/profile/${user?._id}`);
+    else if (title === "Home") navigate(`/`);
+    else if (title === "Messages") navigate(`/chat`);
   };
 
   return (

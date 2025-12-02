@@ -116,7 +116,9 @@ export const logoutUser = async (req, res) => {
 
 export const getProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).select("-password");
+    const user = await User.findById(req.params.id)
+      .populate({ path: "posts", createdAt: -1 })
+      .populate("bookmarks");
 
     if (!user) {
       return res
@@ -198,12 +200,10 @@ export const followAndUnfollowUser = async (req, res) => {
     const followingId = req.params.id;
 
     if (followerId === followingId) {
-      return res
-        .status(404)
-        .json({
-          message: "You cannot follow/unfollow yourself",
-          success: false,
-        });
+      return res.status(404).json({
+        message: "You cannot follow/unfollow yourself",
+        success: false,
+      });
     }
 
     const follower = await User.findById(followerId);
