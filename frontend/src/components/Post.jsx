@@ -120,10 +120,12 @@ const Post = ({ post }) => {
             />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <span>{post.author?.username}</span>
-          {post.author?._id === user?._id && (
-            <Badge variant="secondary">Author</Badge>
-          )}
+          <div className="flex items-center gap-2">
+            <span>{post.author?.username}</span>
+            {post.author?._id === user?._id && (
+              <Badge variant="secondary">Author</Badge>
+            )}
+          </div>
         </div>
 
         <Dialog>
