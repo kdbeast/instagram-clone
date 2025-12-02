@@ -1,14 +1,15 @@
-import express from "express";
-import cookieParser from "cookie-parser";
+import { app, server } from "./socket/socket.js";
+import { connectToDB } from "./utils/db.js";
+
 import cors from "cors";
 import dotenv from "dotenv";
-import { connectToDB } from "./utils/db.js";
-import userRoutes from "./routes/user.route.js";
+import express from "express";
+import cookieParser from "cookie-parser";
 import postRoutes from "./routes/post.route.js";
+import userRoutes from "./routes/user.route.js";
 import messageRoutes from "./routes/message.route.js";
-dotenv.config({});
 
-const app = express();
+dotenv.config({});
 
 app.get("/", (_, res) => {
   res.send("Hello World!");
@@ -30,7 +31,7 @@ app.use("/api/v1/message", messageRoutes);
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   connectToDB();
   console.log(`Server started on port ${PORT}`);
 });
