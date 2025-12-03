@@ -23,7 +23,7 @@ const ChatPage = () => {
         `http://localhost:8000/api/v1/message/send/${receiverId}`,
         { textMessage },
         {
-          headers: {
+          headers: { 
             "Content-Type": "application/json",
           },
           withCredentials: true,
@@ -42,7 +42,7 @@ const ChatPage = () => {
     return () => {
       dispatch(setSelectedUser(null));
     };
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="flex ml-[16%] h-screen">

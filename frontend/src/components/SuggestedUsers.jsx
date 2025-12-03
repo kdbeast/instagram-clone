@@ -8,14 +8,14 @@ const SuggestedUsers = () => {
   return (
     <div className="my-10">
       <div className="flex items-center justify-between text-sm">
-        <h1 className="font-semibold text-gray-600 mr-2">Suggested for you</h1>
+        <h1 className="font-bold text-gray-600 mr-2">Suggested for you</h1>
         <span className="font-medium cursor-pointer">See All</span>
       </div>
       {suggestedUsers?.map((user) => {
         return (
           <div
             key={user._id}
-            className="flex items-center justify-between my-5"
+            className="flex items-center justify-between my-5 gap-8"
           >
             <div className="flex items-center gap-2">
               <Link to={`/profile/${user?._id}`}>
@@ -25,7 +25,7 @@ const SuggestedUsers = () => {
                 </Avatar>
               </Link>
               <div>
-                <h1 className="font-semibold text-sm">
+                <h1 className="font-bold text-sm">
                   <Link to={`/profile/${user?._id}`}>{user?.username}</Link>
                 </h1>
                 <span className="text-gray-600 text-sm">
@@ -33,7 +33,7 @@ const SuggestedUsers = () => {
                 </span>
               </div>
             </div>
-            <span className="text-[#3BADF8] text-xs font-bold cursor-pointer hover:text-[#3495d6]">
+            <span className="text-[#3BADF8] text-sm font-bold cursor-pointer hover:text-[#3495d6]">
               Follow
             </span>
           </div>
